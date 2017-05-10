@@ -20,3 +20,4 @@ NodeMCU firmware included was built against the master branch and includes the f
   wifi
   ws2812 - not used
   tls - not used yet
+LUA Script initially based on the work of https://captain-slow.dk/2016/05/22/replacing-the-itead-sonoff-firmware/
