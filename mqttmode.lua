@@ -1,9 +1,16 @@
-mqttBroker = "10.40.20.41"
-mqttUser = "none"
-mqttPass = "none"
- 
-deviceID="Ext1"
-roomID="1"
+local f,e = loadfile("setup.lua")
+if f==nil then
+  print("SetupNotFound")
+  DeviceName = "DefaultDeviceName"
+  mqttBroker = "172.0.0.1"
+  mqttUser = "none"
+  mqttPass = "none"
+  roomID = "1"
+end
+local ok,e = pcall(f)
+if not ok then
+  print("error running setup file")
+end
 
 -- Pin which the relay is connected to
 relayPin = 6
@@ -39,8 +46,8 @@ function mqttAct()
     tmr.alarm(5, 50, 0, function() gpio.write(mqttLed, gpio.HIGH) end)
 end
  
-m = mqtt.Client("Sonoff-" .. deviceID, 180, mqttUser, mqttPass)
-m:lwt("/lwt", "Sonoff " .. deviceID, 0, 0)
+m = mqtt.Client("Sonoff-" .. DeviceName, 180, mqttUser, mqttPass)
+m:lwt("/lwt", "Sonoff " .. DeviceName, 0, 0)
 m:on("offline", function(con)
     ip = wifi.sta.getip()
     print ("MQTT reconnecting to " .. mqttBroker .. " from " .. ip)
@@ -78,9 +85,9 @@ end)
 -- Update status to MQTT
 function mqtt_update()
     if (gpio.read(relayPin) == 0) then
-        m:publish("/home/".. roomID .."/" .. deviceID .. "/state","OFF",0,0)
+        m:publish("/home/".. roomID .."/" .. DeviceName .. "/state","OFF",0,0)
     else
-        m:publish("/home/".. roomID .."/" .. deviceID .. "/state","ON",0,0)
+        m:publish("/home/".. roomID .."/" .. DeviceName .. "/state","ON",0,0)
     end
 end
   
@@ -106,8 +113,8 @@ end)
 -- Subscribe to MQTT
 function mqtt_sub()
     mqttAct()
-    m:subscribe("/home/".. roomID .."/" .. deviceID,0, function(conn)
-        print("MQTT subscribed to /home/".. roomID .."/" .. deviceID)
+    m:subscribe("/home/".. roomID .."/" .. DeviceName,0, function(conn)
+        print("MQTT subscribed to /home/".. roomID .."/" .. DeviceName)
     end)
 end
  
