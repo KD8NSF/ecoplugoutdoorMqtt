@@ -1,16 +1,25 @@
 resetwifi = 0
 tmr.stop(0)
-
 local f,e = loadfile("setup.lua")
 if f==nil then
   print("SetupNotFound")
   DeviceName="DefaultDeviceName"
-  SNTPServer='172.0.0.1'
+  SNTPServerDNS="pool.ntp.org"
 end
 local ok,e = pcall(f)
 if not ok then
   print("error running setup file")
 end
+net.dns.resolve(SNTPServerDNS, function(sk, ip)
+    if (ip == nil) then 
+        print("DNS fail! - No SNTP lookup") 
+        SNTPServer='172.0.0.1'
+    else 
+        SNTPServer=ip 
+        print("SNTP Lookup Good")
+    end
+end)
+wifi.setmode(wifi.STATION, save)
 
 tmr.alarm(1,3000,1,function()
 
