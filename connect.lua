@@ -11,7 +11,8 @@ tmr.alarm(1,3000,1,function()
         print("SetupMode start")
         tmr.stop(1)
         wifi.setmode(wifi.STATIONAP)
-        wifi.ap.config({ssid="IgnoredByFW",auth=wifi.AUTH_OPEN})
+	-- the included firmware does now use the SSID option so you can use it to identify the name of the device to be setup
+        wifi.ap.config({ssid="SSIDUsedDuringSetup",auth=wifi.AUTH_OPEN})
         print("SetupMode run")
         enduser_setup.manual(true)
         enduser_setup.start(
