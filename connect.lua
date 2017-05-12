@@ -1,6 +1,17 @@
 resetwifi = 0
 tmr.stop(0)
 
+local f,e = loadfile("setup.lua")
+if f==nil then
+  print("SetupNotFound")
+  DeviceName="DefaultDeviceName"
+  SNTPServer='172.0.0.1'
+end
+local ok,e = pcall(f)
+if not ok then
+  print("error running setup file")
+end
+
 tmr.alarm(1,3000,1,function()
 
   local ip = wifi.sta.getip()
@@ -11,8 +22,7 @@ tmr.alarm(1,3000,1,function()
         print("SetupMode start")
         tmr.stop(1)
         wifi.setmode(wifi.STATIONAP)
-	-- the included firmware does now use the SSID option so you can use it to identify the name of the device to be setup
-        wifi.ap.config({ssid="SSIDUsedDuringSetup",auth=wifi.AUTH_OPEN})
+        wifi.ap.config({ssid=DeviceName,auth=wifi.AUTH_OPEN})
         print("SetupMode run")
         enduser_setup.manual(true)
         enduser_setup.start(
@@ -30,9 +40,9 @@ tmr.alarm(1,3000,1,function()
        end
   else
        resetwifi = 0
+       wifi.setmode(wifi.STATION, save)
        print(ip,wifi.sta.getmac())
-	   -- dont forget to set your local/refered SNTP Server below thats why this line is so long so people dont skip it
-       sntp.sync('PICKYOUROWNSNTPSEVER',
+       sntp.sync(SNTPServer,
         function(sec,usec,server)
          print('sync', sec, usec, server)
         end,
