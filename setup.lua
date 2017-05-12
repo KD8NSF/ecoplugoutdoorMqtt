@@ -1,6 +1,6 @@
 DeviceName="TestName"
-SNTPServerDNS = "sntp server setting"
-mqttBroker = "server ip"
+SNTPServerDNS = "pool.ntp.org"
+mqttBrokerDNS = "serverDNS.for.Mqtt"
 mqttUser = "Username"
 mqttPass = "Password"
 roomID = "12345"
