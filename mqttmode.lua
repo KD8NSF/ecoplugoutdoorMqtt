@@ -2,7 +2,7 @@ local f,e = loadfile("setup.lua")
 if f==nil then
   print("SetupNotFound")
   DeviceName = "DefaultDeviceName"
-  mqttBroker = "172.0.0.1"
+  mqttBrokerDNS = "mqtt.localhost"
   mqttUser = "none"
   mqttPass = "none"
   roomID = "1"
@@ -11,6 +11,15 @@ local ok,e = pcall(f)
 if not ok then
   print("error running setup file")
 end
+net.dns.resolve(mqttBrokerDNS, function(sk, ip)
+    if (ip == nil) then 
+        print("DNS fail! - No MQTT lookup") 
+        mqttBroker='172.0.0.1'
+    else 
+        mqttBroker=ip 
+        print("MQTT Lookup Good")
+    end
+end)
 
 -- Pin which the relay is connected to
 relayPin = 6
